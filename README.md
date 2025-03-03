@@ -1,3 +1,6 @@
+![grafik](https://github.com/user-attachments/assets/d8280d1d-c7e1-4220-9480-08d25887380d)
+
+
 # Disclaimer & Notice
 
 This package, including all files within it (such as the script, documents, and any other assets), is provided **exclusively for educational purposes**. By downloading or using this package, **you agree that all actions performed by any file included in this package are solely your responsibility**.
