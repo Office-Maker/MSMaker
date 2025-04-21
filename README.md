@@ -1,37 +1,66 @@
-![grafik](https://github.com/user-attachments/assets/d8280d1d-c7e1-4220-9480-08d25887380d)
+# ⚠️ Windows Defender False Positives – Explanation
 
+## Why Does Windows Defender Flag This Tool?
 
-# Disclaimer & Notice
+Windows Defender (and other antivirus software) may detect this tool as:
 
-This package, including all files within it (such as the script, documents, and any other assets), is provided **exclusively for educational purposes**. By downloading or using this package, **you agree that all actions performed by any file included in this package are solely your responsibility**.
+- `PUA:Win32/Puwaders.C!ml`  
+- `Trojan:Script/Wacatac.B!ml`
 
----
+These are **false positives** caused by:
 
-## Important Notice
+- Windows activation components (e.g., modifying `sppsvc`, `ClipSVC`, or registry keys)
+- Batch files (`*.bat` / `*.cmd`) being inherently powerful (and thus often flagged)
 
-- Upon downloading this package, including the batch script and all associated files, **you agree that you now own everything within the package**.  
-  All rights, responsibilities, and liabilities for the use or misuse of any file in the package, including the script, transfer to **you, the user**.
-
-- This package, including the script and all included files, is provided **"as is," without any warranty or guarantee of functionality, legality, or suitability for any purpose**.
-
----
-
-## Ownership & Liability
-
-- The creator of this package assumes **no liability** for any actions taken with any of the files within this package after it is downloaded.
-
-- By using or downloading this package, **you agree to take full ownership and responsibility** for any actions performed by the batch script or any other file included in the package. **Unauthorized or illegal use may result in legal penalties**.
-
-- This package **does not authorize the circumvention of licensing requirements or any illegal activities**. Only use the files in this package in compliance with all software licenses and local laws.
+> 🔹 **This does NOT mean the file is malicious.**  
+> 🔹 The code is open-source and safe if downloaded from the official repository.
 
 ---
 
-## User Agreement
+## How to Resolve This?
 
-- By proceeding to download or use this package, **you acknowledge that you are fully aware of its contents and functions, and accept all legal responsibilities** for its operation.
+### ✅ Option 1: Use the "Lite" Version (Recommended)
 
-- If you are unsure about the lawful use of any of the files in this package, **you are encouraged to consult a legal professional**.
+If you only need Microsoft Office activation, download:  
+**`MSMaker (Lite).bat`**
+
+- Excludes Windows activation (fewer false positives)
 
 ---
 
-### By downloading or using this package, including the batch script and all included files, you agree to all terms of this disclaimer, including the transfer of ownership and all associated responsibilities.
+### 🔧 Option 2: Add a Defender Exclusion
+
+1. Open **Windows Security** → **Virus & Threat Protection** → **Manage Settings**  
+2. Under **Exclusions**, add the folder containing `MSMaker.bat`
+---
+
+### ⏳ Option 3: Temporarily Disable Real-Time Protection (not recommended)
+
+1. Turn off **Real-time protection** (Windows Security → Virus & Threat Protection)  
+2. Run the script  
+3. Re-enable protection afterward
+
+---
+
+## Note!
+
+- No matter which download you choose, and even if Windows Security is disabled when running the batch file,  
+  Windows will display a warning like **"Windows protected your PC"**.  
+  This **always** occurs when running batch files downloaded from the internet and has nothing to do with potential risks or malware detections.  
+  Since batch scripts are very powerful, Windows will **always** warn you before running them.
+
+> 🔹 **This is normal. Proceed if you trust the source.**
+
+---
+
+## 📜 Legal Disclaimer & Agreement
+
+By downloading or using this software, you agree that:
+
+- This is for **educational/testing purposes only**
+- You take **full responsibility** for any legal or technical consequences
+- **Microsoft’s Terms of Service prohibit unauthorized activation** — use at your own risk
+- The developers are **not liable** for misuse, damages, or compliance violations
+
+> ⚠️ **Warning:** Distributing or using this tool in commercial environments may **violate Microsoft’s licensing terms**.  
+> 💡 Purchase genuine licenses for legal use.
