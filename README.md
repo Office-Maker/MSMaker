@@ -1,8 +1,8 @@
-# ⚠️ Windows Defender False Positives – Explanation
+# ⚠️ Windows Security False Positives – Explanation
 
-## Why Does Windows Defender Flag This Tool?
+## Why Does Windows Security Flag This Tool?
 
-Windows Defender (and other antivirus software) may detect this tool as:
+Windows Security (and other antivirus software) may detect this tool as:
 
 - `PUA:Win32/Puwaders.C!ml`
 - `Trojan:Script/Wacatac.B!ml`
