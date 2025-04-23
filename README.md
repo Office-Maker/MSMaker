@@ -4,7 +4,7 @@
 
 Windows Defender (and other antivirus software) may detect this tool as:
 
-- `PUA:Win32/Puwaders.C!ml`  
+- `PUA:Win32/Puwaders.C!ml`
 - `Trojan:Script/Wacatac.B!ml`
 
 These are **false positives** caused by:
@@ -22,9 +22,9 @@ These are **false positives** caused by:
 ### ✅ Option 1: Use the "Lite" Version (Recommended)
 
 If you only need Microsoft Office activation, download:  
-**`MSMaker (Lite).bat`**
+**[MSMaker-LITE](https://github.com/Office-Maker/MSMaker-LITE)**
 
-- Excludes Windows activation (fewer false positives)
+- Excludes Windows activation (no false positives in windows security)
 
 ---
 
