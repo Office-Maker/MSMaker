@@ -1,5 +1,5 @@
 @echo off
-chcp 65001 >nul  :: Force UTF-8
+chcp 65001 >nul
 :ENTRY
 cls
 setlocal enabledelayedexpansion
