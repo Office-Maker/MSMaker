@@ -90,6 +90,18 @@ if not exist assets\startmanager.bat (
 ) else (
 	echo assets\startmanager.bat %GREEN%[OK]%RESET%
 )
+if not exist assets\sppc64.dll (
+    set error=true
+	echo assets\sppc64.dll %RED%[FAILED]%RESET%
+) else (
+	echo assets\sppc64.dll %GREEN%[OK]%RESET%
+)
+if not exist assets\installchk.bat (
+    set error=true
+	echo assets\installchk.bat %RED%[FAILED]%RESET%
+) else (
+	echo assets\installchk.bat %GREEN%[OK]%RESET%
+)
 
 
 if %error%==false (goto baseintegritycheck2)
