@@ -45,6 +45,9 @@ set LIGHTBLUE=!ESC![94m
 set DARKER=!ESC![90m
 set RESET=!ESC![0m!ESC![97m
 
+set HOSTS_FILE=%SystemRoot%\System32\drivers\etc\hosts
+set HOSTS_ENTRY=0.0.0.0 ols.officeapps.live.com
+
 
 REM base integrity check
 :baseintegritycheck
@@ -202,7 +205,7 @@ echo         ╰─────────────────────�
 pause >nul
 goto INSTALLATIONRUNCHK
 :ALREADYINSTALLEDCHK
-echo|set /p=searching for installed Office LTSC 2024... 
+echo|set /p=searching for installed Microsoft 365... 
 call assets\installchk.bat
 set result=%errorlevel%
 if not %result%==1 (
@@ -214,7 +217,7 @@ echo.
 echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
 echo         │ [i] Information                                                                                     │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
-echo         │ We already found an installed version of Office LTSC 2024, if you don't want to reinstall Office    │
+echo         │ We already found an installed version of Microsoft 365, if you don't want to reinstall Office       │
 echo         │ you can select 'More options' in the main menu and only run the activation process.                 │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 echo         │ %LIGHTBLUE%Press any key to continue to main menu%RESET%                                                              │
@@ -256,23 +259,20 @@ echo.
 echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
 echo         │ Welcome to OfficeMaker, please select your installation of Office                                   │
 echo         ├──────────────────────────────────────────┬──────────────────────────────────────────────────────────┤
-echo         │ 0. Custom Office                         │ 3. Start Menu                                            │
-echo         │ 1. Basic Office (German DE)              │ 4. More Options                                          │
-echo         │ 2. Basic Office (English US)             │ 5. Open README                                           │
+echo         │                                          │ 1. Start Menu                                            │
+echo         │          0. Get Microsoft 365            │ 2. More Options                                          │
+echo         │                                          │ 3. Open README                                           │
 echo         ├──────────────────────────────────────────┴──────────────────────────────────────────────────────────┤
 echo         │ %LIGHTBLUE%Press a number to select%RESET%                                                                            │
 echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
-choice /c 012345D /n
+choice /c 0123D /n
 if %errorlevel%==1 (goto CUSTOM)
-if %errorlevel%==2 (set config_file=config-DE.xml)
-if %errorlevel%==3 (set config_file=config-US.xml)
-if %errorlevel%==4 (goto STARTMANAGER)
-if %errorlevel%==5 (goto MOREOPT)
-if %errorlevel%==6 (
+if %errorlevel%==2 (goto STARTMANAGER)
+if %errorlevel%==3 (goto MOREOPT)
+if %errorlevel%==4 (
 	start readme.txt
 	goto START
 )
-if %errorlevel%==7 (goto DEV)
 
 
 goto PROCESS
@@ -292,11 +292,15 @@ echo         │                             │ You can save a configuration by
 echo         ├─────────────────────────────┼───────────────────────────────────────────────────────────────────────┤
 echo         │ 4. Retry temp-file removal  │ Cleans up unnecessary files left over in the assets folder.           │
 echo         ├─────────────────────────────┼───────────────────────────────────────────────────────────────────────┤
+echo         │ 5. Unblock Connection       │ Configures windows hosts file to unblock the connection to ms-servers │
+echo         ├─────────────────────────────┼───────────────────────────────────────────────────────────────────────┤
+echo         │ 6. Block Connection         │ Configures windows hosts file to block the connection to ms-servers   │
+echo         ├─────────────────────────────┼───────────────────────────────────────────────────────────────────────┤
 echo         │ 0. Main menu                │ Closes this menu                                                      │
 echo         ├─────────────────────────────┴───────────────────────────────────────────────────────────────────────┤
 echo         │ %LIGHTBLUE%Press a number to select%RESET%                                                                            │
 echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
-choice /c 12340 /n
+choice /c 1234560 /n
 if %errorlevel%==1 (
 	goto REACTIVATE)
 if %errorlevel%==2 (
@@ -307,7 +311,13 @@ if %errorlevel%==3 (
 	goto PROCESS)
 if %errorlevel%==4 (
 	goto RECLEANUP)
-if %errorlevel%==5 (goto START)
+if %errorlevel%==5 (
+	set reconfigval=del
+	goto RECONFIGHOSTS)
+if %errorlevel%==6 (
+	set reconfigval=add
+	goto RECONFIGHOSTS)
+if %errorlevel%==7 (goto START)
 goto MOREOPT
 
 :REACTIVATE
@@ -318,12 +328,31 @@ echo.
 echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
 echo         │ [i] DONE                                                                                            │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
-echo         │ Tried to activate Office.                                                                           │
+echo         │ Tried to activate Microsoft 365.                                                                    │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 echo         │ %LIGHTBLUE%You may now close this prompt. (Press any key to return to main menu)%RESET%                               │
 echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
 pause >nul
 goto START
+
+:RECONFIGHOSTS
+echo.
+echo %BLUE%[CONFIG HOSTS FILE] Step 1/1%RESET%
+if %reconfigval%==del (call :DELHOSTSENTRY)
+if %reconfigval%==add (call :ADDHOSTSENTRY)
+set reconfigval=
+echo.
+echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
+echo         │ [i] DONE                                                                                            │
+echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+echo         │ Hosts file updated.                                                                                 │
+echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+echo         │ %LIGHTBLUE%You may now close this prompt. (Press any key to return to main menu)%RESET%                               │
+echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
+pause >nul
+goto START
+
+
 :RECLEANUP
 echo.
 echo %DARKER%[TEMP-FILE REMOVAL] Step 1/1%RESET%
@@ -390,6 +419,7 @@ cd assets
 echo.
 echo %GREEN%[OFFICE INSTALLATION] Step 3/5%RESET%
 echo %YELLOW%WARNING: Do not close this script or power down your system! %RESET%
+call :DELHOSTSENTRY
 echo|set /p=running external installation wizard... 
 call :StartTaskWithSpinner setup.exe /configure %config_file%
 
@@ -402,7 +432,9 @@ if %result%==1 (
 	echo %RED%[FAILED]%RESET%
     goto INSTALLFAILED
 )
-
+echo|set /p=finishing up... 
+timeout /t 10 /nobreak >nul
+echo %GREEN%[DONE]%RESET%
 
 REM ///ACTIVATION///
 echo.
@@ -414,15 +446,24 @@ echo.
 echo %DARKER%[OFFICE-MAKER RESET] Step 5/5%RESET%
 call :CLEANUP
 
+if %activationfailure%==true (goto ACTIVATIONFAILED)
 REM ///DONE///
 :DONE
 echo.
 echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
 echo         │ [i] DONE                                                                                            │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
-echo         │ Microsoft Office 2024 is successfully installed and should have been activated^^!                     │
-echo         │ If your Office didn't activate the KMS server might be temporarily down, return to the main menu    │
-echo         │ and select 'More options' to retry the activation process.                                          │
+echo         │ Microsoft 365 is successfully installed and has been activated^^!                                     │
+echo         │ If your Office didn't activate, you can retry the activation under 'More Options' in the main menu  │
+echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+echo         │ %RED%Some Microsoft 365 features may not be available as they require a connection to their servers,     %RESET%│
+echo         │ %RED%the connection to 'ols.officeapps.live.com' has been blocked for the activation bypass to function! %RESET%│
+echo         | %RED%You can unblock the connection to the Microsoft Servers under 'More Options',                       %RESET%│
+echo         | %RED%or manually remove the line with 'ols.officeapps.live.com' in the windows hosts file                %RESET%│
+echo         | %RED%C:\Windows\System32\drivers\etc\hosts, with the connection reestablished you may however encounter  %RESET%│
+echo         | %RED%issues with your activation.                                                                        %RESET%│
+echo         | %YELLOW%Should 365 apps ask you for a product key enter: NBBBB-BBBBB-BBBBB-BBBCF-PPK9C                      %RESET%|
+echo         | %YELLOW%If there appears to be no option to enter a product key, log out of your microsoft account.         %RESET%|
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 echo         │ %LIGHTBLUE%You may now close this prompt. (Press any key to return to main menu)%RESET%                               │
 echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
@@ -438,7 +479,23 @@ echo         │ [X] ERROR                                                      
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 echo         │ Whoops, looks like the installation got interrupted.                                                │
 echo         │ Please check if office really was fully uninstalled before starting this installation.              │
-echo         │ If you chose 'Custom Office', you may want to double-check your inputs.                             │
+echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+echo         │ %LIGHTBLUE%Press any key to return to menu%RESET%                                                                     │
+echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
+pause >nul
+call :CLEANUP
+goto START
+
+:ACTIVATIONFAILED
+start /min cmd /c "assets\sounder.bat >nul 2>&1"
+echo.
+echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
+echo         │ [X] ERROR                                                                                           │
+echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+echo         │ Whoops, looks like the activation ran into an issue.                                                │
+echo         │ Please logout from your account in an Office application, retry the activation by selecting         │
+echo         │ 'More Options' in the main menu^^!                                                                    │
+echo         │ If it asks you for a product key enter the following: NBBBB-BBBBB-BBBBB-BBBCF-PPK9C                 │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 echo         │ %LIGHTBLUE%Press any key to return to menu%RESET%                                                                     │
 echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
@@ -454,26 +511,98 @@ goto START
 
 
 
+REM ///hosts configuration functions///
+:DELHOSTSENTRY
+echo|set /p=removing block entry from hosts file... 
+findstr /V /C:"%HOSTS_ENTRY%" "%HOSTS_FILE%">"%HOSTS_FILE%.tmp"
+move /Y "%HOSTS_FILE%.tmp" "%HOSTS_FILE%" >nul
+echo %GREEN%[DONE]%RESET%
+exit /b
 
+:ADDHOSTSENTRY
+echo|set /p=writing block entry to hosts file...
+echo %HOSTS_ENTRY%>>"%HOSTS_FILE%"
+echo %GREEN%[DONE]%RESET%
+exit /b
+
+:KILLOFFICE
+echo|set /p=killing all running instances... 
+taskkill /f /im winword.exe >nul 2>&1
+taskkill /f /im excel.exe >nul 2>&1
+taskkill /f /im powerpnt.exe >nul 2>&1
+taskkill /f /im outlook.exe >nul 2>&1
+taskkill /f /im onenote.exe >nul 2>&1
+taskkill /f /im teams.exe >nul 2>&1
+taskkill /f /im visio.exe >nul 2>&1
+taskkill /f /im msaccess.exe >nul 2>&1
+taskkill /f /im mspub.exe >nul 2>&1
+taskkill /f /im lync.exe >nul 2>&1
+taskkill /f /im onenotem.exe >nul 2>&1
+taskkill /f /im graph.exe >nul 2>&1
+echo %GREEN%[DONE]%RESET%
+exit /b
 
 
 REM ///FILE CLEANUP function///
 :CLEANUP
 cd %~dp0\assets
-echo deleting temp files...
+echo|set /p=deleting temp files...  
 del config-temp.xml
-echo temp files deleted
+echo %GREEN%[DONE]%RESET%
 exit /b
 
 :ACTIVATION
 REM ///ACTIVATION function///
-cd C:\Program Files\Microsoft Office\Office16
-echo|set /p=connecting to kms server... 
-call :StartTaskWithSpinner cscript ospp.vbs /sethst:kms.03k.org >nul
-echo %GREEN%[CONNECTED]%RESET%
-echo|set /p=trying to activate key... 
-call :StartTaskWithSpinner cscript ospp.vbs /act >nul
-echo %GREEN%[DONE]%RESET%
+cd %~dp0\assets
+set activationfailure=false
+
+echo Please open an office application and log out of your Microsoft Account before we continue,
+echo after the activation you can log back in.
+echo If you logged yourself out, %LIGHTBLUE%press any key to continue.%RESET%
+pause >nul
+
+call :KILLOFFICE
+
+call :ADDHOSTSENTRY
+
+echo|set /p=deleting original sppcs.dll... 
+del "%programfiles%\Microsoft Office\root\vfs\System\sppcs.dll" >nul 2>&1
+if %errorlevel% neq 0 (
+    echo %RED%[FAILED]%RESET%
+	set activationfailure=true
+) else (
+    echo %GREEN%[DONE]%RESET%
+)
+
+echo|set /p=creating symlink sppcs.dll, sppc.dll... 
+mklink "%programfiles%\Microsoft Office\root\vfs\System\sppcs.dll" "%windir%\System32\sppc.dll" >nul 2>&1
+if %errorlevel% neq 0 (
+    echo %RED%[FAILED]%RESET%
+	set activationfailure=true
+) else (
+    echo %GREEN%[DONE]%RESET%
+)
+
+echo|set /p=copying library sppcs64.dll... 
+copy /y sppc64.dll "%programfiles%\Microsoft Office\root\vfs\System\sppc.dll" >nul 2>&1
+if %errorlevel% neq 0 (
+    echo %RED%[FAILED]%RESET%
+	set activationfailure=true
+) else (
+    echo %GREEN%[DONE]%RESET%
+)
+
+cd %programfiles%\Microsoft Office\Office16
+echo|set /p=activating key... 
+cscript ospp.vbs /inpkey:NBBBB-BBBBB-BBBBB-BBBCF-PPK9C >nul 2>&1
+if %errorlevel% neq 0 (
+    echo %RED%[FAILED]%RESET%
+	set activationfailure=true
+) else (
+    echo %GREEN%[DONE]%RESET%
+)
+
+cd %~dp0
 exit /b
 
 
@@ -531,55 +660,6 @@ set config_file=config-temp.xml
 goto PROCESS
 
 
-
-:DEV
-cls
-echo.
-echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
-echo         │ [i] DEV MODE                                                                                        │
-echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
-echo         │ Here you can run commands with more detailed information about what is happening (for debugging)    │
-echo         ├─────────────────────────────┬───────────────────────────────────────────────────────────────────────┤
-echo         │ connect                     │ Connects to kms server.                                               │
-echo         ├─────────────────────────────┼───────────────────────────────────────────────────────────────────────┤
-echo         │ rearm                       │ Rearms kms, clears cache.                                             │
-echo         ├─────────────────────────────┼───────────────────────────────────────────────────────────────────────┤
-echo         │ act                         │ Runs kms activation.                                                  │
-echo         ├─────────────────────────────┼───────────────────────────────────────────────────────────────────────┤
-echo         │ menu                        │ Exits dev mode.                                                       │
-echo         ╰─────────────────────────────┴───────────────────────────────────────────────────────────────────────╯
-:DEVI
-echo %LIGHTBLUE%Waiting for command input...%RESET%
-set input=null
-set /p input=">"
-echo %YELLOW%[COMMAND STARTED]%RESET%
-
-if %input%==connect (
-	@echo on
-	cd C:\Program Files\Microsoft Office\Office16
-	cscript ospp.vbs /sethst:kms.03k.org
-	cd %~dp0
-	@echo off
-)
-if %input%==rearm (
-	@echo on
-	cd C:\Program Files\Microsoft Office\Office16
-	cscript ospp.vbs /rearm
-	cd %~dp0
-	@echo off
-)
-if %input%==act (
-	@echo on
-	cd C:\Program Files\Microsoft Office\Office16
-	cscript ospp.vbs /act
-	cd %~dp0
-	@echo off
-)
-if %input%==menu (
-	goto START
-)
-echo %YELLOW%[COMMAND FINISHED]%RESET%
-goto DEVI
 
 
 

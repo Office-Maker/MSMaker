@@ -11,8 +11,6 @@ set LIGHTBLUE=!ESC![94m
 set DARKER=!ESC![90m
 set RESET=!ESC![0m!ESC![97m
 
-
-
 :: Set the folder names to check for
 set "folder1=System32"
 set "folder2=assets"
@@ -27,7 +25,6 @@ if /I "%lastFolder%"=="%folder1%" (
 if /I "%lastFolder%"=="%folder2%" (
     exit /b
 )
-
 
 REM File path for the configuration XML file
 set xmlFile=assets\config-temp.xml
@@ -50,9 +47,8 @@ if %found%==1 (
     goto RETRYLANGUAGE
 )
 
-
-REM App selection loop
-set "apps=Access Excel Lync OneDrive OneNote Outlook PowerPoint Publisher Word"
+REM App selection loop - updated with new apps
+set "apps=Access Excel Groove Lync OneDrive OneNote Outlook OutlookForWindows PowerPoint Publisher Teams Word"
 set "includeApps="
 
 echo Select apps to include (press %LIGHTBLUE%[Y]%RESET% to include or %LIGHTBLUE%[N]%RESET% to exclude):
@@ -63,11 +59,11 @@ for %%a in (%apps%) do (
     )
 )
 
-REM Generate XML based on selected options
+REM Generate XML based on selected options - updated to match new format
 (
-    echo ^<Configuration ID="0e76bc3c-228e-4640-b779-98f5ca61ff2e"^>
-    echo     ^<Add OfficeClientEdition="64" Channel="PerpetualVL2024"^>
-    echo         ^<Product ID="ProPlus2024Volume" PIDKEY="XJ2XN-FW8RK-P4HMP-DKDBV-GCVGB"^>
+    echo ^<Configuration ID="bce5cf30-f4b8-4dba-91b3-4b4c9cae26f0"^>
+    echo     ^<Add OfficeClientEdition="64" Channel="Current"^>
+    echo         ^<Product ID="O365ProPlusRetail"^>
     echo             ^<Language ID="%lang%" /^>
 
     REM Exclude apps not selected
@@ -80,11 +76,6 @@ REM Generate XML based on selected options
 
     echo         ^</Product^>
     echo     ^</Add^>
-    echo     ^<Property Name="SharedComputerLicensing" Value="0" /^>
-    echo     ^<Property Name="FORCEAPPSHUTDOWN" Value="FALSE" /^>
-    echo     ^<Property Name="DeviceBasedLicensing" Value="0" /^>
-    echo     ^<Property Name="SCLCacheOverride" Value="0" /^>
-    echo     ^<Property Name="AUTOACTIVATE" Value="1" /^>
     echo     ^<Updates Enabled="TRUE" /^>
     echo     ^<RemoveMSI /^>
     echo     ^<AppSettings^>
@@ -110,7 +101,6 @@ echo         ╰─────────────────────�
 choice /c YNS /n
 if /i %errorlevel%==2 (echo cancel > %xmlFile%)
 if /i %errorlevel%==3 (
-	copy assets\config-temp.xml assets\save.xml
-	echo saved configuration as: assets\save.xml
+    copy assets\config-temp.xml assets\save.xml
+    echo saved configuration as: assets\save.xml
 )
-

@@ -59,7 +59,7 @@ echo       ╰──────────────────────
 echo       ╭───────────────────────────────────────────────────────────────────────────────────────────────────────────╮
 echo       │ What are you willing to activate?                                                                         │
 echo       ├─────────────────────────────────────────────────────┬─────────────────────────────────────────────────────┤
-echo       │ %LIGHTBLUE%(1) Office LTSC 2024 [Office-Maker]%RESET%                 │ %LIGHTBLUE%(2) Windows 10/11 [Win-Maker]%RESET%                       │
+echo       │ %LIGHTBLUE%(1) Microsoft 365 [Office-Maker]%RESET%                    │ %LIGHTBLUE%(2) Windows 10/11 [Win-Maker]%RESET%                       │
 echo       ╰─────────────────────────────────────────────────────┴─────────────────────────────────────────────────────╯
 choice /c 12 /n
 exit /b %errorlevel%
