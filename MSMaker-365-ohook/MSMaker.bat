@@ -539,7 +539,7 @@ taskkill /f /im mspub.exe >nul 2>&1
 taskkill /f /im lync.exe >nul 2>&1
 taskkill /f /im onenotem.exe >nul 2>&1
 taskkill /f /im graph.exe >nul 2>&1
-%GREEN%[DONE]%RESET%
+echo %GREEN%[DONE]%RESET%
 exit /b
 
 
@@ -554,20 +554,16 @@ exit /b
 :ACTIVATION
 REM ///ACTIVATION function///
 cd %~dp0\assets
-call :ADDHOSTSENTRY
 set activationfailure=false
 
-echo Please open an office application and logout before we continue, after the activation you can log back in.
+echo Please open an office application and log out of your Microsoft Account before we continue,
+echo after the activation you can log back in.
 echo If you logged yourself out, %LIGHTBLUE%press any key to continue.%RESET%
+pause >nul
+
 call :KILLOFFICE
 
-reg delete "HKCU\Software\Microsoft\Office\16.0\Common\Identity\Identities" /f
-if %errorlevel% neq 0 (
-    echo %RED%[FAILED]%RESET%
-	set activationfailure=true
-) else (
-    echo %GREEN%[DONE]%RESET%
-)
+call :ADDHOSTSENTRY
 
 echo|set /p=deleting original sppcs.dll... 
 del "%programfiles%\Microsoft Office\root\vfs\System\sppcs.dll" >nul 2>&1
