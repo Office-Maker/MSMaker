@@ -292,11 +292,15 @@ echo         │                             │ You can save a configuration by
 echo         ├─────────────────────────────┼───────────────────────────────────────────────────────────────────────┤
 echo         │ 4. Retry temp-file removal  │ Cleans up unnecessary files left over in the assets folder.           │
 echo         ├─────────────────────────────┼───────────────────────────────────────────────────────────────────────┤
+echo         │ 5. Unblock Connection       │ Configures windows hosts file to unblock the connection to ms-servers │
+echo         ├─────────────────────────────┼───────────────────────────────────────────────────────────────────────┤
+echo         │ 6. Block Connection         │ Configures windows hosts file to block the connection to ms-servers   │
+echo         ├─────────────────────────────┼───────────────────────────────────────────────────────────────────────┤
 echo         │ 0. Main menu                │ Closes this menu                                                      │
 echo         ├─────────────────────────────┴───────────────────────────────────────────────────────────────────────┤
 echo         │ %LIGHTBLUE%Press a number to select%RESET%                                                                            │
 echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
-choice /c 12340 /n
+choice /c 1234560 /n
 if %errorlevel%==1 (
 	goto REACTIVATE)
 if %errorlevel%==2 (
@@ -307,7 +311,13 @@ if %errorlevel%==3 (
 	goto PROCESS)
 if %errorlevel%==4 (
 	goto RECLEANUP)
-if %errorlevel%==5 (goto START)
+if %errorlevel%==5 (
+	set reconfigval=del
+	goto RECONFIGHOSTS)
+if %errorlevel%==6 (
+	set reconfigval=add
+	goto RECONFIGHOSTS)
+if %errorlevel%==7 (goto START)
 goto MOREOPT
 
 :REACTIVATE
@@ -324,6 +334,25 @@ echo         │ %LIGHTBLUE%You may now close this prompt. (Press any key to ret
 echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
 pause >nul
 goto START
+
+:RECONFIGHOSTS
+echo.
+echo %BLUE%[CONFIG HOSTS FILE] Step 1/1%RESET%
+if %reconfigval%==del (call :DELHOSTSENTRY)
+if %reconfigval%==add (call :ADDHOSTSENTRY)
+set reconfigval=
+echo.
+echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
+echo         │ [i] DONE                                                                                            │
+echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+echo         │ Hosts file updated.                                                                                 │
+echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+echo         │ %LIGHTBLUE%You may now close this prompt. (Press any key to return to main menu)%RESET%                               │
+echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
+pause >nul
+goto START
+
+
 :RECLEANUP
 echo.
 echo %DARKER%[TEMP-FILE REMOVAL] Step 1/1%RESET%
@@ -421,9 +450,15 @@ echo.
 echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
 echo         │ [i] DONE                                                                                            │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
-echo         │ Microsoft 365 is successfully installed and should have been activated^^!                             │
-echo         │ If your Office didn't activate the KMS server might be temporarily down, return to the main menu    │
-echo         │ and select 'More options' to retry the activation process.                                          │
+echo         │ Microsoft 365 is successfully installed and has been activated^^!                                     │
+echo         │ If your Office didn't activate, you can retry the activation under 'More Options' in the main menu  │
+echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+echo         │ %RED%Some Microsoft 365 features may not be available as they require a connection to their servers,     %RESET%│
+echo         │ %RED%the connection to 'ols.officeapps.live.com' has been blocked for the activation bypass to function! %RESET%│
+echo         | %RED%You can unblock the connection to the Microsoft Servers under 'More Options',                       %RESET%│
+echo         | %RED%or manually remove the line with 'ols.officeapps.live.com' in the windows hosts file                %RESET%│
+echo         | %RED%C:\Windows\System32\drivers\etc\hosts, with the connection reestablished you may however encounter  %RESET%│
+echo         | %RED%issues with your activation.                                                                        %RESET%│
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 echo         │ %LIGHTBLUE%You may now close this prompt. (Press any key to return to main menu)%RESET%                               │
 echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
