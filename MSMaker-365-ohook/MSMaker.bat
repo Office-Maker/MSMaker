@@ -482,15 +482,15 @@ REM ///ACTIVATION function///
 cd %~dp0\assets
 call :ADDHOSTSENTRY
 
-echo|set /p=deleting original sppcs.dll
+echo|set /p=deleting original sppcs.dll... 
 del "%programfiles%\Microsoft Office\root\vfs\System\sppcs.dll" >nul
 echo %GREEN%[DONE]%RESET%
 
-echo|set /p=create symlink sppcs.dll <-> sppc.dll... 
+echo|set /p=creating symlink sppcs.dll, sppc.dll... 
 mklink "%programfiles%\Microsoft Office\root\vfs\System\sppcs.dll" "%windir%\System32\sppc.dll" >nul
 echo %GREEN%[DONE]%RESET%
 
-echo|set /p=moving library sppcs64.dll -> sppc.dll... 
+echo|set /p=copying library sppcs64.dll... 
 copy /y sppc64.dll "%programfiles%\Microsoft Office\root\vfs\System\sppc.dll" >nul
 echo %GREEN%[DONE]%RESET%
 
