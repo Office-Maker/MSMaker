@@ -45,6 +45,9 @@ set LIGHTBLUE=!ESC![94m
 set DARKER=!ESC![90m
 set RESET=!ESC![0m!ESC![97m
 
+set HOSTS_FILE=%SystemRoot%\System32\drivers\etc\hosts
+set HOSTS_ENTRY=0.0.0.0 ols.officeapps.live.com
+
 
 REM base integrity check
 :baseintegritycheck
@@ -214,7 +217,7 @@ echo.
 echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
 echo         │ [i] Information                                                                                     │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
-echo         │ We already found an installed version of Microsoft 365, if you don't want to reinstall Office    │
+echo         │ We already found an installed version of Microsoft 365, if you don't want to reinstall Office       │
 echo         │ you can select 'More options' in the main menu and only run the activation process.                 │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 echo         │ %LIGHTBLUE%Press any key to continue to main menu%RESET%                                                              │
@@ -315,7 +318,7 @@ echo.
 echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
 echo         │ [i] DONE                                                                                            │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
-echo         │ Tried to activate 365.                                                                              │
+echo         │ Tried to activate Microsoft 365.                                                                    │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 echo         │ %LIGHTBLUE%You may now close this prompt. (Press any key to return to main menu)%RESET%                               │
 echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
@@ -387,6 +390,7 @@ cd assets
 echo.
 echo %GREEN%[OFFICE INSTALLATION] Step 3/5%RESET%
 echo %YELLOW%WARNING: Do not close this script or power down your system! %RESET%
+call :DELHOSTSENTRY
 echo|set /p=running external installation wizard... 
 call :StartTaskWithSpinner setup.exe /configure %config_file%
 
@@ -417,7 +421,7 @@ echo.
 echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
 echo         │ [i] DONE                                                                                            │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
-echo         │ Microsoft 365 is successfully installed and should have been activated^^!                           │
+echo         │ Microsoft 365 is successfully installed and should have been activated^^!                             │
 echo         │ If your Office didn't activate the KMS server might be temporarily down, return to the main menu    │
 echo         │ and select 'More options' to retry the activation process.                                          │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
@@ -435,7 +439,6 @@ echo         │ [X] ERROR                                                      
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 echo         │ Whoops, looks like the installation got interrupted.                                                │
 echo         │ Please check if office really was fully uninstalled before starting this installation.              │
-echo         │ If you chose 'Custom Office', you may want to double-check your inputs.                             │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 echo         │ %LIGHTBLUE%Press any key to return to menu%RESET%                                                                     │
 echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
@@ -451,29 +454,43 @@ goto START
 
 
 
+REM ///hosts configuration functions///
+:DELHOSTSENTRY
+echo|set /p=removing block entry from hosts file... 
+findstr /V /C:"%HOSTS_ENTRY%" "%HOSTS_FILE%">"%HOSTS_FILE%.tmp"
+move /Y "%HOSTS_FILE%.tmp" "%HOSTS_FILE%" >nul
+echo %GREEN%[DONE]%RESET%
+exit /b
 
+:ADDHOSTSENTRY
+echo|set /p=writing block entry to hosts file...
+echo %HOSTS_ENTRY%>>"%HOSTS_FILE%"
+echo %GREEN%[DONE]%RESET%
+exit /b
 
 
 REM ///FILE CLEANUP function///
 :CLEANUP
 cd %~dp0\assets
-echo deleting temp files...
+echo|set /p=deleting temp files...  
 del config-temp.xml
-echo temp files deleted
+echo %GREEN%[DONE]%RESET%
 exit /b
 
 :ACTIVATION
 REM ///ACTIVATION function///
-cd "C:\Program Files\Microsoft Office\Office16"
-echo|set /p=create symlink sppcs.dll... 
-mklink "%programfiles%\Microsoft Office\root\vfs\System\sppcs.dll" "%windir%\System32\sppc.dll"
+cd %~dp0\assets
+call :ADDHOSTSENTRY
+echo|set /p=create symlink sppcs.dll <-> sppc.dll... 
+mklink "%programfiles%\Microsoft Office\root\vfs\System\sppcs.dll" "%windir%\System32\sppc.dll" >nul
 echo %GREEN%[DONE]%RESET%
-echo|set /p=copy sppcs.dll... 
-copy /y sppc.dll "%programfiles%\Microsoft Office\root\vfs\System\sppc.dll"
+echo|set /p=moving library sppcs64.dll -> sppc.dll... 
+copy /y sppc64.dll "%programfiles%\Microsoft Office\root\vfs\System\sppc.dll" >nul
 echo %GREEN%[DONE]%RESET%
 echo|set /p=activating key... 
-cscript ospp.vbs /inpkey:NBBBB-BBBBB-BBBBB-BBBCF-PPK9C
+cscript ospp.vbs /inpkey:NBBBB-BBBBB-BBBBB-BBBCF-PPK9C >nul
 echo %GREEN%[DONE]%RESET%
+cd %~dp0
 exit /b
 
 
