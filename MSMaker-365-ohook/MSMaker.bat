@@ -432,7 +432,9 @@ if %result%==1 (
 	echo %RED%[FAILED]%RESET%
     goto INSTALLFAILED
 )
-
+echo|set /p=finishing up... 
+timeout /t 10 /nobreak >nul
+echo %GREEN%[DONE]%RESET%
 
 REM ///ACTIVATION///
 echo.
@@ -444,6 +446,7 @@ echo.
 echo %DARKER%[OFFICE-MAKER RESET] Step 5/5%RESET%
 call :CLEANUP
 
+if %activationfailure%==true (goto ACTIVATIONFAILED)
 REM ///DONE///
 :DONE
 echo.
@@ -459,6 +462,8 @@ echo         | %RED%You can unblock the connection to the Microsoft Servers unde
 echo         | %RED%or manually remove the line with 'ols.officeapps.live.com' in the windows hosts file                %RESET%│
 echo         | %RED%C:\Windows\System32\drivers\etc\hosts, with the connection reestablished you may however encounter  %RESET%│
 echo         | %RED%issues with your activation.                                                                        %RESET%│
+echo         | %YELLOW%Should 365 apps ask you for a product key enter: NBBBB-BBBBB-BBBBB-BBBCF-PPK9C                      %RESET%|
+echo         | %YELLOW%If there appears to be no option to enter a product key, log out of your microsoft account.         %RESET%|
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 echo         │ %LIGHTBLUE%You may now close this prompt. (Press any key to return to main menu)%RESET%                               │
 echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
@@ -474,6 +479,23 @@ echo         │ [X] ERROR                                                      
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 echo         │ Whoops, looks like the installation got interrupted.                                                │
 echo         │ Please check if office really was fully uninstalled before starting this installation.              │
+echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+echo         │ %LIGHTBLUE%Press any key to return to menu%RESET%                                                                     │
+echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
+pause >nul
+call :CLEANUP
+goto START
+
+:ACTIVATIONFAILED
+start /min cmd /c "assets\sounder.bat >nul 2>&1"
+echo.
+echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
+echo         │ [X] ERROR                                                                                           │
+echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+echo         │ Whoops, looks like the activation ran into an issue.                                                │
+echo         │ Please logout from your account in an Office application, retry the activation by selecting         │
+echo         │ 'More Options' in the main menu^^!                                                                    │
+echo         │ If it asks you for a product key enter the following: NBBBB-BBBBB-BBBBB-BBBCF-PPK9C                 │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 echo         │ %LIGHTBLUE%Press any key to return to menu%RESET%                                                                     │
 echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
@@ -503,6 +525,23 @@ echo %HOSTS_ENTRY%>>"%HOSTS_FILE%"
 echo %GREEN%[DONE]%RESET%
 exit /b
 
+:KILLOFFICE
+echo|set /p=killing all running instances... 
+taskkill /f /im winword.exe >nul 2>&1
+taskkill /f /im excel.exe >nul 2>&1
+taskkill /f /im powerpnt.exe >nul 2>&1
+taskkill /f /im outlook.exe >nul 2>&1
+taskkill /f /im onenote.exe >nul 2>&1
+taskkill /f /im teams.exe >nul 2>&1
+taskkill /f /im visio.exe >nul 2>&1
+taskkill /f /im msaccess.exe >nul 2>&1
+taskkill /f /im mspub.exe >nul 2>&1
+taskkill /f /im lync.exe >nul 2>&1
+taskkill /f /im onenotem.exe >nul 2>&1
+taskkill /f /im graph.exe >nul 2>&1
+%GREEN%[DONE]%RESET%
+exit /b
+
 
 REM ///FILE CLEANUP function///
 :CLEANUP
@@ -516,22 +555,56 @@ exit /b
 REM ///ACTIVATION function///
 cd %~dp0\assets
 call :ADDHOSTSENTRY
+set activationfailure=false
+
+echo Please open an office application and logout before we continue, after the activation you can log back in.
+echo If you logged yourself out, %LIGHTBLUE%press any key to continue.%RESET%
+call :KILLOFFICE
+
+reg delete "HKCU\Software\Microsoft\Office\16.0\Common\Identity\Identities" /f
+if %errorlevel% neq 0 (
+    echo %RED%[FAILED]%RESET%
+	set activationfailure=true
+) else (
+    echo %GREEN%[DONE]%RESET%
+)
 
 echo|set /p=deleting original sppcs.dll... 
-del "%programfiles%\Microsoft Office\root\vfs\System\sppcs.dll" >nul
-echo %GREEN%[DONE]%RESET%
+del "%programfiles%\Microsoft Office\root\vfs\System\sppcs.dll" >nul 2>&1
+if %errorlevel% neq 0 (
+    echo %RED%[FAILED]%RESET%
+	set activationfailure=true
+) else (
+    echo %GREEN%[DONE]%RESET%
+)
 
 echo|set /p=creating symlink sppcs.dll, sppc.dll... 
-mklink "%programfiles%\Microsoft Office\root\vfs\System\sppcs.dll" "%windir%\System32\sppc.dll" >nul
-echo %GREEN%[DONE]%RESET%
+mklink "%programfiles%\Microsoft Office\root\vfs\System\sppcs.dll" "%windir%\System32\sppc.dll" >nul 2>&1
+if %errorlevel% neq 0 (
+    echo %RED%[FAILED]%RESET%
+	set activationfailure=true
+) else (
+    echo %GREEN%[DONE]%RESET%
+)
 
 echo|set /p=copying library sppcs64.dll... 
-copy /y sppc64.dll "%programfiles%\Microsoft Office\root\vfs\System\sppc.dll" >nul
-echo %GREEN%[DONE]%RESET%
+copy /y sppc64.dll "%programfiles%\Microsoft Office\root\vfs\System\sppc.dll" >nul 2>&1
+if %errorlevel% neq 0 (
+    echo %RED%[FAILED]%RESET%
+	set activationfailure=true
+) else (
+    echo %GREEN%[DONE]%RESET%
+)
 
+cd %programfiles%\Microsoft Office\Office16
 echo|set /p=activating key... 
-cscript ospp.vbs /inpkey:NBBBB-BBBBB-BBBBB-BBBCF-PPK9C >nul
-echo %GREEN%[DONE]%RESET%
+cscript ospp.vbs /inpkey:NBBBB-BBBBB-BBBBB-BBBCF-PPK9C >nul 2>&1
+if %errorlevel% neq 0 (
+    echo %RED%[FAILED]%RESET%
+	set activationfailure=true
+) else (
+    echo %GREEN%[DONE]%RESET%
+)
 
 cd %~dp0
 exit /b
