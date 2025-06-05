@@ -462,23 +462,23 @@ if %activationfailure%==true (goto ACTIVATIONFAILED)
 REM ///DONE///
 :DONE
 echo.
-echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
-echo         │ [i] DONE                                                                                            │
-echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
-echo         │ Microsoft 365 is successfully installed and has been activated^^!                                     │
-echo         │ If your Office didn't activate, you can retry the activation under 'More Options' in the main menu  │
-echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
-echo         │ %RED%Some Microsoft 365 features may not be available as they require a connection to their servers,     %RESET%│
-echo         │ %RED%the connection to 'ols.officeapps.live.com' has been blocked for the activation bypass to function! %RESET%│
-echo         | %RED%You can unblock the connection to the Microsoft Servers under 'More Options',                       %RESET%│
-echo         | %RED%or manually remove the line with 'ols.officeapps.live.com' in the windows hosts file                %RESET%│
-echo         | %RED%C:\Windows\System32\drivers\etc\hosts, with the connection reestablished you may however encounter  %RESET%│
-echo         | %RED%issues with your activation.                                                                        %RESET%│
-echo         | %YELLOW%Should 365 apps ask you for a product key enter: NBBBB-BBBBB-BBBBB-BBBCF-PPK9C                      %RESET%|
-echo         | %YELLOW%If there appears to be no option to enter a product key, log out of your microsoft account.         %RESET%|
-echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
-echo         │ %LIGHTBLUE%You may now close this prompt. (Press any key to return to main menu)%RESET%                               │
-echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
+echo         ╭──────────────────────────────────────────────────────────────────────────────────────────────╮
+echo         │ [i] DONE                                                                                     │
+echo         ├──────────────────────────────────────────────────────────────────────────────────────────────┤
+echo         │ Microsoft 365 was installed and activated successfully^^!                                      │
+echo         │ If not, try activating it again under 'More Options' in the main menu.                       │
+echo         ├──────────────────────────────────────────────────────────────────────────────────────────────┤
+echo         │ %RED%Some features might not work because the activation bypass blocks                            %RESET%│
+echo         │ %RED%'ols.officeapps.live.com'.                                                                   %RESET%│
+echo         │ %RED%To fix this, go to 'More Options' or edit the hosts file at:                                 %RESET%│
+echo         │ %RED%C:\Windows\System32\drivers\etc\hosts                                                        %RESET%│
+echo         │ %RED%Note: Reconnecting may cause activation issues.                                              %RESET%│
+echo         │ %YELLOW%If you're asked for a product key, use: NBBBB-BBBBB-BBBBB-BBBCF-PPK9C                        %RESET%│
+echo         │ %YELLOW%If no option to enter the key appears, log out of your Microsoft account.                    %RESET%│
+echo         ├──────────────────────────────────────────────────────────────────────────────────────────────┤
+echo         │ %LIGHTBLUE%You can now close this window. Press any key to return to the menu.                          %RESET%│
+echo         ╰──────────────────────────────────────────────────────────────────────────────────────────────╯
+
 pause >nul
 goto START
 
@@ -525,14 +525,14 @@ goto START
 
 REM ///hosts configuration functions///
 :DELHOSTSENTRY
-echo|set /p=removing block entry from hosts file... 
+echo|set /p=deleting entry from hosts file... 
 findstr /V /C:"%HOSTS_ENTRY%" "%HOSTS_FILE%">"%HOSTS_FILE%.tmp"
 move /Y "%HOSTS_FILE%.tmp" "%HOSTS_FILE%" >nul
 echo %GREEN%[DONE]%RESET%
 exit /b
 
 :ADDHOSTSENTRY
-echo|set /p=writing block entry to hosts file...
+echo|set /p=writing entry to hosts file...
 echo %HOSTS_ENTRY%>>"%HOSTS_FILE%"
 echo %GREEN%[DONE]%RESET%
 exit /b
