@@ -16,12 +16,6 @@ This package is provided for educational purposes only. By downloading or using 
 
 ================================================================
 
-⚖️ Legal Use Only
-- Do not use this package to violate any licenses or laws.
-- Unauthorized or illegal use may result in legal penalties.
-
-================================================================
-
 🧾 Final Notice
 - By using this package, you agree to all terms above.
 
