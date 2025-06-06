@@ -41,23 +41,42 @@ for %%L in (%languages%) do (
 )
 
 if %found%==1 (
-    echo Valid language code: %lang%
+    echo Selected Language Pack: %lang%
 ) else (
     echo Invalid language code: %lang%
     goto RETRYLANGUAGE
 )
 
 REM App selection loop - updated with new apps
-set "apps=Access Excel Groove Lync OneDrive OneNote Outlook OutlookForWindows PowerPoint Publisher Teams Word"
-set "includeApps="
+set "apps=Word,Excel,PowerPoint,OneNote,Access,Publisher,Outlook,OutlookForWindows,OneDrive,Groove,Teams,Lync"
+set "names=Word,Excel,PowerPoint,OneNote,Access,Publisher,Outlook (classic),Outlook (new),OneDrive,OneDrive for Business,Microsoft Teams,Skype for Business"
 
+
+
+goto SKIP
 echo Select apps to include (press %LIGHTBLUE%[Y]%RESET% to include or %LIGHTBLUE%[N]%RESET% to exclude):
 for %%a in (%apps%) do (
-    CHOICE /C YN /N /M "Include %%a (Y/N)?"
+    set /a i+=1
+    set "app=%%a"
+    call set "displayName=%%name[!i!]%%"
+    CHOICE /C YN /N /M "Include !displayName! (Y/N)?"
     if !errorlevel!==1 (
-        set "includeApps=!includeApps! %%a"
+        set "includeApps=!includeApps! !app!"
     )
 )
+:SKIP
+
+
+call :getLength names len
+for /L %%i in (0,1,%len%) do (
+    call :getElement names %%i currentName
+    call :getElement apps %%i currentApp
+    CHOICE /C YN /N /M "Include !currentName! (Y/N)?"
+    if !errorlevel!==1 (
+        set "includeApps=!includeApps! !currentApp!"
+    )
+)
+
 
 REM Generate XML based on selected options - updated to match new format
 (
@@ -86,21 +105,74 @@ REM Generate XML based on selected options - updated to match new format
     echo ^</Configuration^>
 ) > "%xmlFile%"
 
-echo config file successfully written: %xmlFile%
+echo config file written: %xmlFile%
 REM option to save configuration
 echo.
 echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
 echo         │ [i] Successfully written config file                                                                │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
-echo         │ (Y) Continue with installation                                                                      │
+echo         │ (Y) Continue                                                                                        │
 echo         │ (N) Cancel and delete configuration                                                                 │
-echo         │ (S) Continue with installation and save configuration                                               │
+echo         │ (S) Continue and save configuration                                                                 │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 echo         │ %LIGHTBLUE%Enter a option to continue (Y/N/S)%RESET%                                                                  │
 echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
 choice /c YNS /n
 if /i %errorlevel%==2 (echo cancel > %xmlFile%)
 if /i %errorlevel%==3 (
-    copy assets\config-temp.xml assets\save.xml
+    copy assets\config-temp.xml assets\save.xml >nul
     echo saved configuration as: assets\save.xml
 )
+
+exit /b
+
+
+
+:getElement
+setlocal enabledelayedexpansion
+set "list=!%1!"
+set /a idx=%2
+set /a count=0
+
+:loop
+if "!list!"=="" (
+    endlocal & set "%3=" & goto :eof
+)
+
+for /f "tokens=1* delims=," %%a in ("!list!") do (
+    if !count! equ %idx% (
+        endlocal & set "%3=%%a" & goto :eof
+    )
+    set "list=%%b"
+    set /a count+=1
+)
+goto loop
+
+
+
+
+
+
+
+:getLength
+
+setlocal enabledelayedexpansion
+set "list=!%1!"
+set /a count=0
+
+:countLoop
+if "!list!"=="" (
+    rem If count is 0 (empty list), return -1, else count-1
+    if %count% equ 0 (
+        set /a count=-1
+    ) else (
+        set /a count-=1
+    )
+    endlocal & set /a "%2=%count%-1" & goto :eof
+)
+
+for /f "tokens=1* delims=," %%a in ("!list!") do (
+    set "list=%%b"
+    set /a count+=1
+)
+goto countLoop

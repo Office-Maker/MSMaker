@@ -208,11 +208,11 @@ echo.
 echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
 echo         │ [X] ENTRY BLOCKED                                                                                   │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
-echo         │ An active office installer has been found running in the background, we cannot proceed as long the  │
-echo         │ installation is not finished. Please do not kill the installer task, instead wait for the           │
-echo         │ installation to finish.                                                                             │
+echo         │ An active setup task has been found running in the background, we cannot proceed as long as other   │
+echo         │ setups are running. Please wait for the task to finish or search for 'setup.exe' in the taskmanager │
+echo         │ and kill any listed processes.                                                                      │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
-echo         │ %LIGHTBLUE%Press any key to try again%RESET%                                                                          │
+echo         │ %LIGHTBLUE%Press any key to check again%RESET%                                                                        │
 echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
 pause >nul
 goto INSTALLATIONRUNCHK
@@ -422,8 +422,8 @@ echo %YELLOW%[OFFICE REMOVAL] Step 2/5%RESET%
 echo Please remove any old installations of Microsoft Office, Microsoft 365 or
 echo free standalone programs like OneNote which belong to Microsoft 365.
 control appwiz.cpl
-echo If you removed all Office installations, %LIGHTBLUE%press any key to continue.%RESET%
-pause >nul
+echo Have you uninstalled every version of MS Office, MS 365 or other Office related Programs? %LIGHTBLUE%(Y) Yes%RESET%
+choice /c y /n
 
 :CRITICALPROCESS
 REM ///INSTALLATION///
@@ -568,10 +568,10 @@ REM ///ACTIVATION function///
 cd %~dp0\assets
 set activationfailure=false
 
-echo Please open an office application and log out of your Microsoft Account before we continue,
-echo after the activation you can log back in.
-echo If you logged yourself out, %LIGHTBLUE%press any key to continue.%RESET%
-pause >nul
+echo Please open an office application like Word and log out of all your associated Microsoft Accounts
+echo before we continue, after the activation you can log back in.
+echo Have you logged yourself out? %LIGHTBLUE%(Y) Yes%RESET%
+choice /c y /n
 
 call :KILLOFFICE
 
