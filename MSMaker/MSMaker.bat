@@ -242,6 +242,7 @@ goto PRESTART
 :PRESTART
 call :CLEANUP
 :START
+
 REM ////////////////////////////////////////////////////////////////////////////////////
 set config_file=none.xml
 REM ////////////////////////////////////////////////////////////////////////////////////
@@ -445,12 +446,14 @@ if %result%==1 (
     goto INSTALLFAILED
 )
 echo|set /p=finishing up... 
-timeout /t 10 /nobreak >nul
+call :StartTimedSpinner 10
 echo %GREEN%[DONE]%RESET%
 
 REM ///ACTIVATION///
 echo.
 echo %BLUE%[OFFICE ACTIVATION] Step 4/5%RESET%
+echo %YELLOW%WARNING: Office is NOT activated yet, please follow the following instructions to make sure%RESET%
+echo %YELLOW%         that the activation process doesn't fail^^!%RESET%
 call :ACTIVATION
 
 REM ///FILE CLEANUP///
@@ -559,7 +562,7 @@ REM ///FILE CLEANUP function///
 :CLEANUP
 cd %~dp0\assets
 echo|set /p=deleting temp files...  
-del config-temp.xml
+del config-temp.xml >nul 2>&1
 echo %GREEN%[DONE]%RESET%
 exit /b
 
@@ -568,8 +571,12 @@ REM ///ACTIVATION function///
 cd %~dp0\assets
 set activationfailure=false
 
-echo Please open an office application like Word and log out of all your associated Microsoft Accounts
-echo before we continue, after the activation you can log back in.
+echo 1. Open a basic office application (Word, PowerPoint, Excel, OneNote)
+echo 2. Upon asked for a login or activation, hit the small blue text 'I have a product key'
+echo 3. In the following prompt hit the small x at the top right
+echo 4. Hit 'File' at the top left and navigate to the vertical tab 'Account'
+echo 5. Logout of all your associated Microsoft Accounts if logged in.
+echo NOTE: After the activation you can log back into all of your accounts.
 echo Have you logged yourself out? %LIGHTBLUE%(Y) Yes%RESET%
 choice /c y /n
 
@@ -696,6 +703,21 @@ if %ERRORLEVEL%==0 goto spin
 rem Exit the method
 exit /b
 
+
+
+:StartTimedSpinner
+setlocal enabledelayedexpansion
+set /a duration=%1
+set /a counter=0
+:spin_timed
+for %%a in (/ - \) do (
+    if !counter!==%duration% exit /b
+    <nul set /p=%%a
+    timeout /nobreak /t 1 >nul
+    <nul set /p=
+    set /a counter+=1
+)
+goto spin_timed
 
 
 
