@@ -42,43 +42,61 @@ for %%L in (%languages%) do (
 
 if %found%==1 (
     echo Selected Language Pack: %lang%
-) else (
-    echo Invalid language code: %lang%
-    goto RETRYLANGUAGE
+    goto NOLANGUAGEERROR
 )
 
-REM App selection loop - updated with new apps
+start /min cmd /c "assets\sounder.bat >nul 2>&1"
+echo.
+echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
+echo         │ %RED%[X] Error: Invalid language code%RESET%                                                                    │
+echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+echo         │ Please enter a valid language code (e.g.: en-us, en-gb, de-de)                                      │
+echo         │ If you are unsure, please open the readme file and check if your language code is supported.        │
+echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
+echo.
+goto RETRYLANGUAGE
+:NOLANGUAGEERROR
+
+
+REM App selection
 set "apps=Word,Excel,PowerPoint,OneNote,Access,Publisher,Outlook,OutlookForWindows,OneDrive,Groove,Teams,Lync"
 set "names=Word,Excel,PowerPoint,OneNote,Access,Publisher,Outlook (classic),Outlook (new),OneDrive,OneDrive for Business,Microsoft Teams,Skype for Business"
 
-
-
-goto SKIP
-echo Select apps to include (press %LIGHTBLUE%[Y]%RESET% to include or %LIGHTBLUE%[N]%RESET% to exclude):
-for %%a in (%apps%) do (
-    set /a i+=1
-    set "app=%%a"
-    call set "displayName=%%name[!i!]%%"
-    CHOICE /C YN /N /M "Include !displayName! (Y/N)?"
-    if !errorlevel!==1 (
-        set "includeApps=!includeApps! !app!"
-    )
-)
-:SKIP
-
-
+set "includeApps="
+set basicAppsSelected=0
 call :getLength names len
 for /L %%i in (0,1,%len%) do (
     call :getElement names %%i currentName
     call :getElement apps %%i currentApp
+
+    REM Check if this is a basic office app
+
     CHOICE /C YN /N /M "Include !currentName! (Y/N)?"
     if !errorlevel!==1 (
         set "includeApps=!includeApps! !currentApp!"
+        if /I "!currentApp!"=="Word" set basicAppsSelected=1
+        if /I "!currentApp!"=="Excel" set basicAppsSelected=1
+        if /I "!currentApp!"=="PowerPoint" set basicAppsSelected=1
+        if /I "!currentApp!"=="OneNote" set basicAppsSelected=1
     )
 )
 
+REM Validate at least one basic app is selected
+if !basicAppsSelected!==1 (goto NOSELECTIONERROR)
+start /min cmd /c "assets\sounder.bat >nul 2>&1"
+echo.
+echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
+echo         │ %RED%[X] Error: Invalid program selection%RESET%                                                                │
+echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+echo         │ You must select at least one basic Office program (Word, Excel, PowerPoint, OneNote)^^!               │
+echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
+echo.
+goto RETRYLANGUAGE
+:NOSELECTIONERROR
 
-REM Generate XML based on selected options - updated to match new format
+
+
+REM Generate XML based on selected options
 (
     echo ^<Configuration ID="bce5cf30-f4b8-4dba-91b3-4b4c9cae26f0"^>
     echo     ^<Add OfficeClientEdition="64" Channel="Current"^>
@@ -126,8 +144,6 @@ if /i %errorlevel%==3 (
 
 exit /b
 
-
-
 :getElement
 setlocal enabledelayedexpansion
 set "list=!%1!"
@@ -148,14 +164,7 @@ for /f "tokens=1* delims=," %%a in ("!list!") do (
 )
 goto loop
 
-
-
-
-
-
-
 :getLength
-
 setlocal enabledelayedexpansion
 set "list=!%1!"
 set /a count=0

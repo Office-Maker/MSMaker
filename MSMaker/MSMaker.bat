@@ -43,6 +43,7 @@ set YELLOW=!ESC![33m
 set BLUE=!ESC![34m
 set LIGHTBLUE=!ESC![94m
 set DARKER=!ESC![90m
+set INVERSE=!ESC![7m
 set RESET=!ESC![0m!ESC![97m
 
 set HOSTS_FILE=%SystemRoot%\System32\drivers\etc\hosts
@@ -108,7 +109,7 @@ if %error%==false (goto baseintegritycheck2)
 start /min cmd /c "assets\sounder.bat >nul 2>&1"
 echo.
 echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
-echo         │ [X] ERROR                                                                                           │
+echo         │ %RED%[X] ERROR%RESET%                                                                                           │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 echo         │ Woops, looks like other files required for this program are missing.                                │
 echo         │ Note that you must extract the entire downloaded zip file into a folder to allow this script to     │
@@ -144,7 +145,7 @@ if not exist assets\config-US.xml (
 if %error%==true (
 	echo.
 	echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
-	echo         │ [^^!] WARNING                                                                                         │
+	echo         │ %YELLOW%[^^!] WARNING%RESET%                                                                                         │
 	echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 	echo         │ It looks like some configuration files are missing, however this will not affect the base           │
 	echo         │ functionality of this program as the custom installation will still work.                           │
@@ -163,25 +164,37 @@ set input=null
 cls
 echo.
 echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
-echo         │ [^^!] DISCLAIMER                                                                                      │
+echo         │ %YELLOW%[^^!] DISCLAIMER%RESET%                                                                                      │
 echo         ├─────────────────────────────────────────────────────────────────────────────────┬───────────────────┤
-echo         │ %RED%By running this script, you confirm that you have%RESET%                               │%YELLOW%         █         %RESET%│
-echo         │ %RED%read the README file and agree to all terms and%RESET%                                 │%YELLOW%        ███        %RESET%│
-echo         │ %RED%conditions stated within it^^! %RESET%                                                   │%YELLOW%       ██ ██       %RESET%│
-echo         │ %RED%You accept full responsibility for any actions%RESET%                                  │%YELLOW%      ███ ███      %RESET%│
-echo         │ %RED%performed by this script and any files included%RESET%                                 │%YELLOW%     ████ ████     %RESET%│
-echo         │ %RED%in this package. The creator assumes no liability%RESET%                               │%YELLOW%    ███████████    %RESET%│
-echo         │ %RED%for any damage, loss, or legal consequences^^! %RESET%                                   │%YELLOW%   ██████ ██████   %RESET%│
-echo         │ %RED%Continue at your own risk^^! %RESET%                                                     │%YELLOW%  ███████████████  %RESET%│
+echo         │ %RED%By running this script, you confirm that you have                              %RESET% │%YELLOW%         █         %RESET%│
+echo         │ %RED%read the README file and agree to all terms and                                %RESET% │%YELLOW%        ███        %RESET%│
+echo         │ %RED%conditions stated within it^^!                                                   %RESET% │%YELLOW%       ██ ██       %RESET%│
+echo         │ %RED%You accept full responsibility for any actions                                 %RESET% │%YELLOW%      ███ ███      %RESET%│
+echo         │ %RED%performed by this script and any files included                                %RESET% │%YELLOW%     ████ ████     %RESET%│
+echo         │ %RED%in this package. The creator assumes no liability                              %RESET% │%YELLOW%    ███████████    %RESET%│
+echo         │ %RED%for any damage, loss, or legal consequences^^!                                   %RESET% │%YELLOW%   ██████ ██████   %RESET%│
+echo         │ %RED%Continue at your own risk^^!                                                     %RESET% │%YELLOW%  ███████████████  %RESET%│
 echo         ├─────────────────────────────────────────────────────────────────────────────────┴───────────────────┤
+echo         │ %YELLOW%%INVERSE%DISCLAIMER AND USER AGREEMENT%RESET%                                                                       │
+echo         │ %YELLOW%This package is provided for educational purposes only. By downloading or using it,%RESET%                 │
+echo         │ %YELLOW%you accept full responsibility for all actions taken with its contents.%RESET%                             │
+echo         │ %YELLOW%%INVERSE%OWNERSHIP AND RESPONSIBILITY%RESET%                                                                        │
+echo         │ %YELLOW%Upon download, you become the owner of the entire package.%RESET%                                          │
+echo         │ %YELLOW%You accept full legal and ethical responsibility for its use or misuse.%RESET%                             │
+echo         │ %YELLOW%%INVERSE%NO WARRANTY%RESET%                                                                                         │
+echo         │ %YELLOW%Provided "as is" with no guarantees of functionality or legality.%RESET%                                   │
+echo         │ %YELLOW%The creator assumes no liability for any consequences of use.%RESET%                                       │
+echo         │ %YELLOW%%INVERSE%FINAL NOTICE%RESET%                                                                                        │
+echo         │ %YELLOW%By using this package, you agree to all terms above.%RESET%                                                │
+echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 echo         │ %LIGHTBLUE%(A) Agree and continue%RESET%                                                                              │
 echo         │ %LIGHTBLUE%(R) Open readme file%RESET%                                                                                │
 echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
 choice /c AR /n
 if %errorlevel%==1 (goto STARTMANAGER)
 if %errorlevel%==2 (start readme.txt)
 goto DISCLAMER
-
 
 
 :STARTMANAGER
@@ -189,7 +202,6 @@ cls
 call assets\startmanager.bat
 if %errorlevel%==1 (goto INSTALLATIONRUNCHK)
 if %errorlevel%==2 (goto ACTIVATEWIN)
-
 
 
 :INSTALLATIONRUNCHK
@@ -206,7 +218,7 @@ echo %RED%[FOUND]%RESET%
 start /min cmd /c "assets\sounder.bat >nul 2>&1"
 echo.
 echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
-echo         │ [X] ENTRY BLOCKED                                                                                   │
+echo         │ %RED%[X] ENTRY BLOCKED%RESET%                                                                                   │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 echo         │ An active setup task has been found running in the background, we cannot proceed as long as other   │
 echo         │ setups are running. Please wait for the task to finish or search for 'setup.exe' in the taskmanager │
@@ -270,15 +282,15 @@ echo     888   "   888  d8888888888 888   Y88b  888        888  T88b
 echo     888       888 d88P     888 888    Y88b 8888888888 888   T88b
 echo.
 echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
-echo         │ Welcome to OfficeMaker, please select your installation of Office                                   │
+echo         │ Welcome to OfficeMaker                                                                              │
 echo         ├──────────────────────────────────────────┬──────────────────────────────────────────────────────────┤
-echo         │                                          │ 1. Start Menu                                            │
-echo         │          0. Get Microsoft 365            │ 2. More Options                                          │
-echo         │                                          │ 3. Open README                                           │
+echo         │                                          │ 2. Back to start menu                                    │
+echo         │          1. Get Microsoft 365            │ 3. More Options                                          │
+echo         │                                          │ 4. Open README                                           │
 echo         ├──────────────────────────────────────────┴──────────────────────────────────────────────────────────┤
 echo         │ %LIGHTBLUE%Press a number to select%RESET%                                                                            │
 echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
-choice /c 0123D /n
+choice /c 1234 /n
 if %errorlevel%==1 (goto CUSTOM)
 if %errorlevel%==2 (goto STARTMANAGER)
 if %errorlevel%==3 (goto MOREOPT)
@@ -337,11 +349,12 @@ goto MOREOPT
 echo.
 echo %BLUE%[OFFICE ACTIVATION] Step 1/1%RESET%
 call :ACTIVATION
+if %activationfailure%==true (goto ACTIVATIONFAILED)
 echo.
 echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
 echo         │ [i] DONE                                                                                            │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
-echo         │ Tried to activate Microsoft 365.                                                                    │
+echo         │ Microsoft 365 should have been activated.                                                           │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 echo         │ %LIGHTBLUE%You may now close this prompt. (Press any key to return to main menu)%RESET%                               │
 echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
@@ -406,7 +419,7 @@ if %error%==true (
 	start /min cmd /c "assets\sounder.bat >nul 2>&1"
 	echo.
 	echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
-	echo         │ [X] ERROR                                                                                           │
+	echo         │ %RED%[X] ERROR%RESET%                                                                                           │
 	echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 	echo         │ Whoops, looks like a necessary installation file is missing.                                        │
 	echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
@@ -420,10 +433,17 @@ if %error%==true (
 REM ///REMOVAL///
 echo.
 echo %YELLOW%[OFFICE REMOVAL] Step 2/5%RESET%
-echo Please remove any old installations of Microsoft Office, Microsoft 365 or
-echo free standalone programs like OneNote which belong to Microsoft 365.
+echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
+echo         │ %GREEN%[^>] ACTION REQUIRED%RESET%                                                                                 │
+echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+echo         │ Please remove any old installations of Microsoft Office, Microsoft 365 or free standalone programs  │
+echo         │ like OneNote which belong to Microsoft 365.                                                         │
+echo         ├╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶┤
+echo         │ Have you uninstalled every version of MS Office, MS 365 or other Office related Programs?           │
+echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+echo         │ %LIGHTBLUE%(Y) Yes%RESET%                                                                                             │
+echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
 control appwiz.cpl
-echo Have you uninstalled every version of MS Office, MS 365 or other Office related Programs? %LIGHTBLUE%(Y) Yes%RESET%
 choice /c y /n
 
 :CRITICALPROCESS
@@ -431,7 +451,8 @@ REM ///INSTALLATION///
 cd assets
 echo.
 echo %GREEN%[OFFICE INSTALLATION] Step 3/5%RESET%
-echo %YELLOW%WARNING: Do not close this script or power down your system! %RESET%
+echo %YELLOW%WARNING: Do not interrupt the installation in any way^^! Office is installing with several different background tasks,%RESET%
+echo %YELLOW%         an incomplete stop of the installation may cause future issues, even when retrying the installation^^!%RESET%
 call :DELHOSTSENTRY
 echo|set /p=running external installation wizard... 
 call :StartTaskWithSpinner setup.exe /configure %config_file%
@@ -452,8 +473,8 @@ echo %GREEN%[DONE]%RESET%
 REM ///ACTIVATION///
 echo.
 echo %BLUE%[OFFICE ACTIVATION] Step 4/5%RESET%
-echo %YELLOW%WARNING: Office is NOT activated yet, please follow the following instructions to make sure%RESET%
-echo %YELLOW%         that the activation process doesn't fail^^!%RESET%
+echo %RED%WARNING: Office is NOT activated yet, please follow the instructions to make sure%RESET%
+echo %RED%         that the activation process doesn't fail^^!%RESET%
 call :ACTIVATION
 
 REM ///FILE CLEANUP///
@@ -471,13 +492,11 @@ echo         ├─────────────────────�
 echo         │ Microsoft 365 was installed and activated successfully^^!                                      │
 echo         │ If not, try activating it again under 'More Options' in the main menu.                       │
 echo         ├──────────────────────────────────────────────────────────────────────────────────────────────┤
-echo         │ %RED%Some features might not work because the activation bypass blocks                            %RESET%│
-echo         │ %RED%'ols.officeapps.live.com'.                                                                   %RESET%│
-echo         │ %RED%To fix this, go to 'More Options' or edit the hosts file at:                                 %RESET%│
-echo         │ %RED%C:\Windows\System32\drivers\etc\hosts                                                        %RESET%│
-echo         │ %RED%Note: Reconnecting may cause activation issues.                                              %RESET%│
-echo         │ %YELLOW%If you're asked for a product key, use: NBBBB-BBBBB-BBBBB-BBBCF-PPK9C                        %RESET%│
-echo         │ %YELLOW%If no option to enter the key appears, log out of your Microsoft account.                    %RESET%│
+echo         │ %YELLOW%Some features might not work because the activation bypass blocks                            %RESET%│
+echo         │ %YELLOW%'ols.officeapps.live.com'.                                                                   %RESET%│
+echo         │ %YELLOW%To fix this, go to 'More Options' and select (5) or edit the hosts file at:                  %RESET%│
+echo         │ %YELLOW%C:\Windows\System32\drivers\etc\hosts                                                        %RESET%│
+echo         │ %YELLOW%Note: Reconnecting may cause activation problems later, making Office unreliable.            %RESET%│
 echo         ├──────────────────────────────────────────────────────────────────────────────────────────────┤
 echo         │ %LIGHTBLUE%You can now close this window. Press any key to return to the menu.                          %RESET%│
 echo         ╰──────────────────────────────────────────────────────────────────────────────────────────────╯
@@ -490,7 +509,7 @@ REM ///INSTALL FAILED///
 start /min cmd /c "assets\sounder.bat >nul 2>&1"
 echo.
 echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
-echo         │ [X] ERROR                                                                                           │
+echo         │ %RED%[X] ERROR%RESET%                                                                                           │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 echo         │ Whoops, looks like the installation got interrupted.                                                │
 echo         │ Please check if office really was fully uninstalled before starting this installation.              │
@@ -505,19 +524,26 @@ goto START
 start /min cmd /c "assets\sounder.bat >nul 2>&1"
 echo.
 echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
-echo         │ [X] ERROR                                                                                           │
+echo         │ %RED%[X] ERROR%RESET%                                                                                           │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 echo         │ Whoops, looks like the activation ran into an issue.                                                │
-echo         │ Please logout from your account in an Office application, retry the activation by selecting         │
-echo         │ 'More Options' in the main menu^^!                                                                    │
-echo         │ If it asks you for a product key enter the following: NBBBB-BBBBB-BBBBB-BBBCF-PPK9C                 │
+echo         │ Please try to reinstall Microsoft 365.                                                              │
+echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+echo         │ %LIGHTBLUE%(Y) Main menu%RESET%                                                                                       │
+echo         │ %LIGHTBLUE%(M) More information%RESET%                                                                                │
+echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
+choice /c YM /n
+if %errorlevel%==1 (
+	call :CLEANUP
+	goto START)
+echo         ╵ This can happen if Microsoft pushes patches changing how the activation system behaves.             ╵
+echo         ╵ this issue will probably be solved in the next few updates of MSMaker.                              ╵
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 echo         │ %LIGHTBLUE%Press any key to return to menu%RESET%                                                                     │
 echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
 pause >nul
 call :CLEANUP
 goto START
-
 
 
 
@@ -570,14 +596,20 @@ exit /b
 REM ///ACTIVATION function///
 cd %~dp0\assets
 set activationfailure=false
-
-echo 1. Open a basic office application (Word, PowerPoint, Excel, OneNote)
-echo 2. Upon asked for a login or activation, hit the small blue text 'I have a product key'
-echo 3. In the following prompt hit the small x at the top right
-echo 4. Hit 'File' at the top left and navigate to the vertical tab 'Account'
-echo 5. Logout of all your associated Microsoft Accounts if logged in.
-echo NOTE: After the activation you can log back into all of your accounts.
-echo Have you logged yourself out? %LIGHTBLUE%(Y) Yes%RESET%
+echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
+echo         │ %GREEN%[^>] ACTION REQUIRED%RESET%                                                                                 │
+echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+echo         │  1.  Open a basic office application (Word, PowerPoint, Excel, OneNote)                             │
+echo         │  2.  Upon asked for a login or activation, click the small blue text 'I have a product key'         │
+echo         │  3.  In the following prompt click the small x at the top right                                     │
+echo         │  4.  In the main menu, navigate to the vertical tab 'Account'                                       │
+echo         │  5.  Logout of all your associated Microsoft Accounts if logged in.                                 │
+echo         │ %YELLOW%NOTE: After the activation you can log back into all of your accounts.%RESET%                              │
+echo         ├╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶┤
+echo         │ Have you logged yourself out?                                                                       │
+echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+echo         │ %LIGHTBLUE%(Y) Yes%RESET%                                                                                             │
+echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
 choice /c y /n
 
 call :KILLOFFICE
@@ -604,6 +636,16 @@ if %errorlevel% neq 0 (
 
 echo|set /p=copying library sppcs64.dll... 
 copy /y sppc64.dll "%programfiles%\Microsoft Office\root\vfs\System\sppc.dll" >nul 2>&1
+if %errorlevel% neq 0 (
+    echo %RED%[FAILED]%RESET%
+	set activationfailure=true
+) else (
+    echo %GREEN%[DONE]%RESET%
+)
+
+cd %~dp0\assets
+echo|set /p=copying Office16 directory... 
+robocopy "Office16" "%programfiles%\Microsoft Office\Office16" /E /COPYALL /R:0 /W:0 >nul 2>&1
 if %errorlevel% neq 0 (
     echo %RED%[FAILED]%RESET%
 	set activationfailure=true
@@ -649,7 +691,7 @@ echo     888   "   888  d8888888888 888   Y88b  888        888  T88b
 echo     888       888 d88P     888 888    Y88b 8888888888 888   T88b
 echo.
 echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
-echo         │ [^^!] HWID 3.0 WINDOWS ACTIVATOR                                                                      │
+echo         │ %YELLOW%[^^!] HWID 3.0 WINDOWS ACTIVATOR%RESET%                                                                      │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 echo         │ You are about to activate Windows using the HWID activation exploit.                                │
 echo         │ Are you sure you want to proceed? If Windows is already activated, running this script may pose     │
