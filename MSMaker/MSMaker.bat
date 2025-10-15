@@ -162,31 +162,20 @@ if %error%==true (
 :DISCLAMER
 set input=null
 cls
+
 echo.
 echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
 echo         │ %YELLOW%[^^!] DISCLAIMER%RESET%                                                                                      │
 echo         ├─────────────────────────────────────────────────────────────────────────────────┬───────────────────┤
-echo         │ %RED%By running this script, you confirm that you have                              %RESET% │%YELLOW%         █         %RESET%│
-echo         │ %RED%read the README file and agree to all terms and                                %RESET% │%YELLOW%        ███        %RESET%│
-echo         │ %RED%conditions stated within it^^!                                                   %RESET% │%YELLOW%       ██ ██       %RESET%│
-echo         │ %RED%You accept full responsibility for any actions                                 %RESET% │%YELLOW%      ███ ███      %RESET%│
-echo         │ %RED%performed by this script and any files included                                %RESET% │%YELLOW%     ████ ████     %RESET%│
-echo         │ %RED%in this package. The creator assumes no liability                              %RESET% │%YELLOW%    ███████████    %RESET%│
-echo         │ %RED%for any damage, loss, or legal consequences^^!                                   %RESET% │%YELLOW%   ██████ ██████   %RESET%│
-echo         │ %RED%Continue at your own risk^^!                                                     %RESET% │%YELLOW%  ███████████████  %RESET%│
+echo         │ %GREEN%By running this script, you confirm that you have                              %RESET% │%YELLOW%         █         %RESET%│
+echo         │ %GREEN%read the README file and agree to all terms and                                %RESET% │%YELLOW%        ███        %RESET%│
+echo         │ %GREEN%conditions stated within it^^!                                                   %RESET% │%YELLOW%       ██ ██       %RESET%│
+echo         │ %GREEN%You accept full responsibility for any actions                                 %RESET% │%YELLOW%      ███ ███      %RESET%│
+echo         │ %GREEN%performed by this script and any files included                                %RESET% │%YELLOW%     ████ ████     %RESET%│
+echo         │ %GREEN%in this package. The creator assumes no liability                              %RESET% │%YELLOW%    ███████████    %RESET%│
+echo         │ %GREEN%for any damage, loss, or legal consequences^^!                                   %RESET% │%YELLOW%   ██████ ██████   %RESET%│
+echo         │ %GREEN%Continue at your own risk^^!                                                     %RESET% │%YELLOW%  ███████████████  %RESET%│
 echo         ├─────────────────────────────────────────────────────────────────────────────────┴───────────────────┤
-echo         │ %YELLOW%%INVERSE%DISCLAIMER AND USER AGREEMENT%RESET%                                                                       │
-echo         │ %YELLOW%This package is provided for educational purposes only. By downloading or using it,%RESET%                 │
-echo         │ %YELLOW%you accept full responsibility for all actions taken with its contents.%RESET%                             │
-echo         │ %YELLOW%%INVERSE%OWNERSHIP AND RESPONSIBILITY%RESET%                                                                        │
-echo         │ %YELLOW%Upon download, you become the owner of the entire package.%RESET%                                          │
-echo         │ %YELLOW%You accept full legal and ethical responsibility for its use or misuse.%RESET%                             │
-echo         │ %YELLOW%%INVERSE%NO WARRANTY%RESET%                                                                                         │
-echo         │ %YELLOW%Provided "as is" with no guarantees of functionality or legality.%RESET%                                   │
-echo         │ %YELLOW%The creator assumes no liability for any consequences of use.%RESET%                                       │
-echo         │ %YELLOW%%INVERSE%FINAL NOTICE%RESET%                                                                                        │
-echo         │ %YELLOW%By using this package, you agree to all terms above.%RESET%                                                │
-echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 echo         │ %LIGHTBLUE%(A) Agree and continue%RESET%                                                                              │
 echo         │ %LIGHTBLUE%(R) Open readme file%RESET%                                                                                │
 echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
@@ -242,7 +231,9 @@ echo         ╭─────────────────────�
 echo         │ [i] Information                                                                                     │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 echo         │ We already found an installed version of Microsoft 365, if you don't want to reinstall Office       │
-echo         │ you can select 'More options' in the main menu and only run the activation process.                 │
+echo         │ you can TRY to select 'More options' in the main menu and only run the activation process.          │
+echo         ├╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶┤
+echo         │ THIS MIGHT NOT WORK^^! If it doesn't just do the full setup.                                          │
 echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 echo         │ %LIGHTBLUE%Press any key to continue to main menu%RESET%                                                              │
 echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
@@ -645,7 +636,7 @@ if %errorlevel% neq 0 (
 
 cd %~dp0\assets
 echo|set /p=copying Office16 directory... 
-robocopy "Office16" "%programfiles%\Microsoft Office\Office16" /E /COPYALL /R:0 /W:0 >nul 2>&1
+xcopy "Office16" "%programfiles%\Microsoft Office\Office16" /E /I /Y >nul 2>&1
 if %errorlevel% neq 0 (
     echo %RED%[FAILED]%RESET%
 	set activationfailure=true

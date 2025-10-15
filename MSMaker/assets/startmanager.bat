@@ -29,10 +29,9 @@ if /I "%lastFolder%"=="%folder2%" (
 )
 
 
-
-
-
 echo.
+echo.
+echo        What are you willing to activate?
 echo       ╭────────────────────────────────────────────────────╮ ╭────────────────────────────────────────────────────╮
 echo       │%LIGHTRED%                                                    %RESET%│ │%CYAN%                                                    %RESET%│
 echo       │%LIGHTRED%                             #####-:                %RESET%│ │%CYAN%                                   ########         %RESET%│
@@ -55,19 +54,15 @@ echo       │%LIGHTRED%               ************************             %RES
 echo       │%LIGHTRED%                  *****************-                %RESET%│ │%CYAN%                          #################         %RESET%│
 echo       │%LIGHTRED%                      ******+                       %RESET%│ │%CYAN%                                     ######         %RESET%│
 echo       │%LIGHTRED%                                                    %RESET%│ │%CYAN%                                                    %RESET%│
+echo       │%LIGHTRED%          (1) Microsoft 365 [Office-Maker]          %RESET%│ │%CYAN%           (2) Windows 10/11 [Win-Maker]            %RESET%│
 echo       ╰────────────────────────────────────────────────────╯ ╰────────────────────────────────────────────────────╯
-echo       ╭───────────────────────────────────────────────────────────────────────────────────────────────────────────╮
-echo       │ What are you willing to activate?                                                                         │
-echo       ├─────────────────────────────────────────────────────┬─────────────────────────────────────────────────────┤
-echo       │ %LIGHTBLUE%(1) Microsoft 365 [Office-Maker]%RESET%                    │ %LIGHTBLUE%(2) Windows 10/11 [Win-Maker]%RESET%                       │
-echo       ╰─────────────────────────────────────────────────────┴─────────────────────────────────────────────────────╯
+echo.
 choice /c 12 /n
 exit /b %errorlevel%
             
                                                   
                                                   
-
-                                                 
+                                               
                                                   
                                                   
                 
