@@ -79,12 +79,6 @@ if not exist assets\setup.exe (
 ) else (
 	echo assets\setup.exe %GREEN%[OK]%RESET%
 )
-if not exist assets\HWIDActivation.cmd (
-    set error=true
-	echo assets\HWIDActivation.cmd %RED%[FAILED]%RESET%
-) else (
-	echo assets\HWIDActivation.cmd %GREEN%[OK]%RESET%
-)
 if not exist assets\startmanager.bat (
     set error=true
 	echo assets\startmanager.bat %RED%[FAILED]%RESET%
@@ -122,33 +116,22 @@ goto OUT
 
 
 :baseintegritycheck2
-set error=false
-if not exist assets\config-DE.xml (
-    set error=true
-	echo assets\config-DE.xml %YELLOW%[FAILED]%RESET%
+set hwidmissing=false
+if not exist assets\HWIDActivation.cmd (
+    set hwidmissing=true
+	echo assets\HWIDActivation.cmd %RED%[FAILED]%RESET%
 ) else (
-	echo assets\config-DE.xml %GREEN%[OK]%RESET%
-)
-if not exist assets\config-UK.xml (
-    set error=true
-	echo assets\config-UK.xml %YELLOW%[FAILED]%RESET%
-) else (
-	echo assets\config-UK.xml %GREEN%[OK]%RESET%
-)
-if not exist assets\config-US.xml (
-    set error=true
-	echo assets\config-US.xml %YELLOW%[FAILED]%RESET%
-) else (
-	echo assets\config-US.xml %GREEN%[OK]%RESET%
+	echo assets\HWIDActivation.cmd %GREEN%[OK]%RESET%
 )
 
-if %error%==true (
+if %hwidmissing%==true (
 	echo.
 	echo         ╭─────────────────────────────────────────────────────────────────────────────────────────────────────╮
 	echo         │ %YELLOW%[^^!] WARNING%RESET%                                                                                         │
 	echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
-	echo         │ It looks like some configuration files are missing, however this will not affect the base           │
-	echo         │ functionality of this program as the custom installation will still work.                           │
+	echo         │ It looks like the HWID activation script is missing, Windows Security may have deleted this file,   │
+	echo         │ this will not affect the OfficeMaker at all, the WinMaker however will be unavailable.              │
+	echo         │ To use the WinMaker, please temporarily disable Windows Security and redownload MSMaker.            │
 	echo         ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 	echo         │ %LIGHTBLUE%Press any key to continue anyway%RESET%                                                                    │
 	echo         ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
@@ -188,7 +171,7 @@ goto DISCLAMER
 
 :STARTMANAGER
 cls
-call assets\startmanager.bat
+call assets\startmanager.bat %hwidmissing%
 if %errorlevel%==1 (goto INSTALLATIONRUNCHK)
 if %errorlevel%==2 (goto ACTIVATEWIN)
 
